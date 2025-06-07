@@ -1,16 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../auth/firebase.js";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const PostForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        alert("로그인이 필요합니다.");
+        navigate("/Login");
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 여기에 저장 로직 추가 (ex. localStorage, 백엔드 API 등)
-    alert("게시물이 등록되었습니다!");
-    navigate("/Community");
+    try {
+      await addDoc(collection(db, "posts"), {
+        title,
+        content,
+        author: auth.currentUser?.email || "익명",
+        createdAt: serverTimestamp(),
+      });
+      alert("게시물이 등록되었습니다!");
+      navigate("/Community");
+    } catch (err) {
+      console.error("게시글 등록 실패:", err);
+    }
   };
 
   return (

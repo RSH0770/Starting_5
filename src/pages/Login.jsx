@@ -1,26 +1,50 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../auth/firebase";
+import useAuth from "../auth/useAuth";
 
 const Login = () => {
   const navigate = useNavigate();
+  const user = useAuth();
+
+  if (user) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-neutral-200">
+        <div className="bg-white p-6 rounded-xl shadow-xl text-center">
+          <h2 className="text-2xl font-bold mb-4">이미 로그인되었습니다</h2>
+          <p className="text-blue-600 mb-4">{user.email}</p>
+          <button
+            onClick={() => navigate("/")}
+            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+          >
+            홈으로 이동
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
 
-    if (email === "user@example.com" && password === "1234") {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       alert("로그인 성공!");
-    } else {
+      navigate("/"); // 로그인 후 이동할 페이지
+    } catch (err) {
       setError("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-netural-200">
-      <div className="bg-gradient-to-l from-blue-600 to-red-500 p-8 rounded-2xl shadow-xl w-96">
+    <div className="flex flex-col items-center justify-center h-screen bg-neutral-200">
+      <div className="bg-blue-900 p-8 rounded-2xl shadow-xl w-96">
         <div className="bg-neutral-300 p-5 rounded-2xl">
           <h2 className="text-3xl font-bold mb-6 text-center text-black">
             로그인
