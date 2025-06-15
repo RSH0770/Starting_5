@@ -30,7 +30,11 @@ Starting_5는 농구 관련 정보 제공 및 관리 기능을 갖춘 웹 애플
 
 ### ⬇️ 설치
 
-1.  GitHub 저장소를 클론합니다:
+프로젝트 파일을 가져오는 방법은 두 가지가 있습니다: 저장소를 클론하거나 ZIP 파일을 다운로드합니다.
+
+**옵션 1: 저장소 클론 (권장)**
+
+1.  Git을 사용하여 저장소를 클론합니다:
     ```bash
     git clone [https://github.com/RSH0770/Starting_5.git](https://github.com/RSH0770/Starting_5.git)
     ```
@@ -38,6 +42,16 @@ Starting_5는 농구 관련 정보 제공 및 관리 기능을 갖춘 웹 애플
     ```bash
     cd Starting_5
     ```
+
+**옵션 2: ZIP 파일 다운로드**
+
+1.  [GitHub 저장소 페이지](https://github.com/RSH0770/Starting_5)로 이동합니다.
+2.  녹색 "Code" 버튼을 클릭하고 "Download ZIP"을 선택하여 프로젝트 파일을 다운로드합니다.
+3.  다운로드한 ZIP 파일의 압축을 원하는 위치에 해제합니다.
+4.  터미널 또는 명령 프롬프트를 열고 압축을 해제한 프로젝트 디렉토리로 이동합니다 (예: `cd path/to/Starting_5-main`).
+
+**이후 단계 (두 옵션 모두 동일)**
+
 3.  의존성 패키지를 설치합니다:
     ```bash
     npm install
@@ -82,9 +96,9 @@ Starting_5는 농구 관련 정보 제공 및 관리 기능을 갖춘 웹 애플
 Firebase 설정이 완료되면, 개발 서버를 시작합니다:
 
 ```bash
-npm start
+npm run dev
 # 또는
-# yarn start
+# yarn run dev
 ```
 
 ### 📂 프로젝트 구조
