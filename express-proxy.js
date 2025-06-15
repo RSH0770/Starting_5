@@ -1,25 +1,23 @@
-const express = require("express");
-const axios = require("axios");
-const cors = require("cors");
+import express from "express";
+import fetch from "node-fetch";
+import cors from "cors";
 
 const app = express();
-const PORT = 5000;
+app.use(cors()); // 모든 도메인 허용 (개발용)
 
-app.get("/api/v1/players", async (req, res) => {
-  const search = req.query.search || "";
-  const targetUrl = `https://www.balldontlie.io/api/v1/players?search=${encodeURIComponent(
-    search
-  )}`;
-
+app.get("/api/stats", async (req, res) => {
   try {
-    const { data } = await axios.get(targetUrl);
+    const queryString = new URLSearchParams(req.query).toString();
+    const response = await fetch(
+      `https://www.balldontlie.io/api/v1/stats?${queryString}`
+    );
+    const data = await response.json();
     res.json(data);
   } catch (err) {
-    console.error("Proxy error:", err.message);
-    res
-      .status(500)
-      .json({ error: "Proxy request failed", details: err.message });
+    res.status(500).json({ error: "서버 에러" });
   }
 });
 
-app.listen(PORT, () => console.log(`✅ Proxy on http://localhost:${PORT}`));
+app.listen(3001, () =>
+  console.log("Proxy server running on http://localhost:3001")
+);

@@ -7,12 +7,12 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     open: true,
-    proxy: {
-      "/api": {
-        target: "https://www.balldontlie.io",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
-    },
+    // proxy: {
+    //   "/api": {
+    //     target: "https://balldontlie.io",
+    //     changeOrigin: true,
+    //     rewrite: (path) => path.replace(/^\/api/, "/api"),
+    //   },
+    // },
   },
 });

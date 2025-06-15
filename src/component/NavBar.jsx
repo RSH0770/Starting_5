@@ -38,7 +38,7 @@ const NavBar = () => {
   };
   return (
     <div>
-      <div className="flex flex-row items-center justify-around bg-neutral-100">
+      <div className="flex flex-row items-center justify-around bg-blue-100 rounded-b-sm">
         <div className="flex justify-start">
           <img
             src="src\assets\Starting_5_Logo.png"

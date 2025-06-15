@@ -12,64 +12,57 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-const ADMIN_UIDS = ["관리자_uid_1", "관리자_uid_2"]; // 관리자 uid 배열
-
 const PostDetail = () => {
-  const { id: postId } = useParams(); // id 파라미터를 postId로 매핑
+  const { id: postId } = useParams();
   const user = auth.currentUser;
 
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState("");
-  const isAdmin = user && ADMIN_UIDS.includes(user.uid);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  // 게시물 정보 불러오기 (한번만)
   useEffect(() => {
-    console.log("PostDetail useEffect - postId:", postId);
-    if (!postId) return;
+    const checkAdmin = async () => {
+      if (!user) return;
+      try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        setIsAdmin(userDoc.exists() && userDoc.data().role === "admin");
+      } catch (error) {
+        console.error("관리자 확인 실패:", error);
+      }
+    };
+    checkAdmin();
+  }, [user]);
+
+  useEffect(() => {
     const fetchPost = async () => {
       try {
         const docRef = doc(db, "posts", postId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          console.log("Post data:", docSnap.data());
           setPost({ id: docSnap.id, ...docSnap.data() });
-        } else {
-          console.log("No such document!");
-          setPost(null);
         }
       } catch (error) {
-        console.error("Error fetching post:", error);
+        console.error("게시물 로드 실패:", error);
       }
     };
     fetchPost();
   }, [postId]);
 
-  // 댓글 실시간 구독
   useEffect(() => {
-    if (!postId) return;
-    const commentsRef = collection(db, "comments");
-    const q = query(commentsRef, orderBy("createdAt", "asc"));
-    // 댓글은 comments 컬렉션에 있고 postId 필드로 연결되어 있음
+    const q = query(collection(db, "comments"), orderBy("createdAt", "asc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const filteredComments = snapshot.docs
+      const filtered = snapshot.docs
         .map((doc) => ({ id: doc.id, ...doc.data() }))
-        .filter((comment) => comment.postId === postId);
-      setComments(filteredComments);
+        .filter((c) => c.postId === postId);
+      setComments(filtered);
     });
     return () => unsubscribe();
   }, [postId]);
 
-  // 댓글 추가
   const handleAddComment = async () => {
-    if (!user) {
-      alert("댓글 작성은 로그인 후 가능합니다.");
-      return;
-    }
-    if (!commentInput.trim()) {
-      alert("댓글 내용을 입력하세요.");
-      return;
-    }
+    if (!user) return alert("로그인 후 작성해주세요.");
+    if (!commentInput.trim()) return alert("댓글 내용을 입력하세요.");
     try {
       await addDoc(collection(db, "comments"), {
         postId,
@@ -84,10 +77,9 @@ const PostDetail = () => {
     }
   };
 
-  // 댓글 삭제 (관리자 또는 댓글 작성자)
   const handleDeleteComment = async (commentId, authorId) => {
     if (!isAdmin && user?.uid !== authorId) {
-      alert("댓글 삭제 권한이 없습니다.");
+      alert("삭제 권한이 없습니다.");
       return;
     }
     if (window.confirm("댓글을 삭제하시겠습니까?")) {
@@ -95,59 +87,72 @@ const PostDetail = () => {
     }
   };
 
-  if (!post) return <p>게시물을 불러오는 중입니다...</p>;
+  if (!post) return <p className="p-10 text-xl">게시물을 불러오는 중...</p>;
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">{post.title}</h2>
-      <p className="mb-6">작성자: {post.author}</p>
-
-      <div className="mb-6 whitespace-pre-wrap">{post.content}</div>
-
-      <h3 className="text-xl font-semibold mb-2">댓글</h3>
-      {comments.length === 0 && <p>댓글이 없습니다.</p>}
-      <ul>
-        {comments.map((comment) => (
-          <li
-            key={comment.id}
-            className="mb-2 border p-2 rounded flex justify-between"
-          >
-            <span>
-              <strong>{comment.author}</strong>: {comment.content}
-            </span>
-            {(isAdmin || user?.uid === comment.authorId) && (
-              <button
-                onClick={() =>
-                  handleDeleteComment(comment.id, comment.authorId)
-                }
-                className="text-red-600 hover:underline"
-              >
-                삭제
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
-
-      {user ? (
-        <div className="mt-4">
-          <textarea
-            rows={3}
-            className="w-full border rounded p-2"
-            placeholder="댓글을 입력하세요"
-            value={commentInput}
-            onChange={(e) => setCommentInput(e.target.value)}
-          />
-          <button
-            onClick={handleAddComment}
-            className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            댓글 작성
-          </button>
+    <div className="min-h-screen bg-blue-50 p-8">
+      <div className="bg-blue-900 rounded-2xl text-white p-6 mb-6 shadow-lg">
+        <h2 className="text-3xl font-bold mb-2">{post.title}</h2>
+        <p className="text-sm text-blue-100 mb-4">작성자: {post.author}</p>
+        <div className="bg-white rounded-xl p-4">
+          <div className="whitespace-pre-wrap text-base text-black">
+            {post.content}
+          </div>
         </div>
-      ) : (
-        <p>댓글을 작성하려면 로그인해주세요.</p>
-      )}
+      </div>
+
+      <div className="bg-white rounded-2xl p-6 shadow-md">
+        <h3 className="text-xl font-semibold mb-4 text-blue-800">댓글</h3>
+        {comments.length === 0 ? (
+          <p className="text-blue-500">아직 댓글이 없습니다.</p>
+        ) : (
+          <ul className="space-y-3">
+            {comments.map((comment) => (
+              <li
+                key={comment.id}
+                className="border border-blue-200 p-3 rounded-lg flex justify-between items-start bg-blue-50"
+              >
+                <div>
+                  <p className="font-bold text-blue-900">{comment.author}</p>
+                  <p className="text-sm">{comment.content}</p>
+                </div>
+                {(isAdmin || user?.uid === comment.authorId) && (
+                  <button
+                    onClick={() =>
+                      handleDeleteComment(comment.id, comment.authorId)
+                    }
+                    className="text-sm text-red-600 hover:underline"
+                  >
+                    삭제
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {user ? (
+          <div className="mt-6">
+            <textarea
+              rows={3}
+              className="w-full border border-blue-300 rounded-lg p-3 mb-2 focus:outline-none focus:ring focus:ring-blue-300"
+              placeholder="댓글을 입력하세요"
+              value={commentInput}
+              onChange={(e) => setCommentInput(e.target.value)}
+            />
+            <button
+              onClick={handleAddComment}
+              className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800"
+            >
+              댓글 작성
+            </button>
+          </div>
+        ) : (
+          <p className="mt-4 text-blue-500">
+            댓글을 작성하려면 로그인해주세요.
+          </p>
+        )}
+      </div>
     </div>
   );
 };

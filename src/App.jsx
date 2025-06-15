@@ -13,8 +13,6 @@ import PostForm from "./Community/PostForm";
 import PostDetail from "./Community/PostDetail";
 import AdminDashboard from "./admin/AdminDashboard";
 import UserManagement from "./admin/UserManagement";
-import PostManagement from "./admin/PostManagement";
-import CommentManagement from "./admin/CommentManagement";
 
 const App = () => {
   return (
@@ -39,8 +37,7 @@ const App = () => {
           {/* 관리자 대시보드 및 관리페이지 */}
           <Route path="Admin" element={<AdminDashboard />} />
           <Route path="Admin/users" element={<UserManagement />} />
-          <Route path="Admin/posts" element={<PostManagement />} />
-          <Route path="Admin/comments" element={<CommentManagement />} />
+          <Route path="Admin/posts" element={<PostList />} />
         </Route>
 
         {/* 404 Not Found */}

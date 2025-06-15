@@ -43,9 +43,9 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-neutral-200">
-      <div className="bg-blue-900 p-8 rounded-2xl shadow-xl w-96">
-        <div className="bg-neutral-300 p-5 rounded-2xl">
+    <div className="flex flex-col items-center justify-center h-screen bg-blue-50">
+      <div className="bg-blue-800 p-8 rounded-2xl shadow-xl w-96">
+        <div className="bg-blue-100 p-5 rounded-2xl">
           <h2 className="text-3xl font-bold mb-6 text-center text-black">
             로그인
           </h2>
@@ -56,21 +56,21 @@ const Login = () => {
               placeholder="이메일"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-400"
+              className="bg-blue-50 px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-400"
             />
             <input
               type="password"
               placeholder="비밀번호"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-400"
+              className="bg-blue-50 px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-400"
             />
 
             {error && <p className="text-red-500 text-sm">{error}</p>}
 
             <button
               type="submit"
-              className="bg-neutral-900 hover:bg-neutral-700 text-white py-2 rounded-xl font-semibold transition"
+              className="bg-green-500 hover:bg-neutral-700 text-white py-2 rounded-xl font-semibold transition"
             >
               로그인
             </button>

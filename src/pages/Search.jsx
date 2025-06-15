@@ -1,137 +1,134 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
-import StatTerms from "../data/StatTerm";
-import { teams } from "../data/Team.js";
-import { BalldontlieAPI } from "@balldontlie/sdk";
+import React, { useState } from "react";
+import playerData from "../data/PlayerData";
 
-const API_KEY = import.meta.env.VITE_API_KEY;
-const api = new BalldontlieAPI({ apiKey: API_KEY });
-
-const Search = () => {
-  const [query, setQuery] = useState("");
-  const [players, setPlayers] = useState([]);
+function Search() {
+  const [searchTerm, setSearchTerm] = useState("");
   const [filteredPlayers, setFilteredPlayers] = useState([]);
-  const [statTermResults, setStatTermResults] = useState([]);
-  const [teamResults, setTeamResults] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
-  // 최초 선수 목록 로딩
-  useEffect(() => {
-    const fetchPlayers = async () => {
-      try {
-        const response = await api.nba.getPlayers({ page: 1, per_page: 100 });
-        setPlayers(response.data);
-      } catch (err) {
-        setError("선수 목록을 불러오는 중 오류 발생");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPlayers();
-  }, []);
+  const handleSearch = (event) => {
+    const term = event.target.value.toLowerCase();
+    setSearchTerm(term);
 
-  // 검색어에 따라 필터링 수행
-  useEffect(() => {
-    const lowerQuery = query.toLowerCase();
+    if (term === "") {
+      setFilteredPlayers([]);
+    } else {
+      const results = playerData.filter(
+        (player) =>
+          player.name.toLowerCase().includes(term) ||
+          player.team.toLowerCase().includes(term) ||
+          (player.position && player.position.toLowerCase().includes(term))
+      );
+      setFilteredPlayers(results);
+    }
+    setSelectedPlayer(null);
+  };
 
-    // 선수 검색
-    const filtered = players.filter((player) => {
-      const fullName = `${player.first_name} ${player.last_name}`.toLowerCase();
-      return fullName.includes(lowerQuery);
-    });
-    setFilteredPlayers(filtered);
+  const handlePlayerClick = (player) => {
+    setSelectedPlayer(player);
+    setSearchTerm("");
+    setFilteredPlayers([]);
+  };
 
-    // 팀 검색
-    const matchedTeams = teams
-      .filter((team) => team.name.toLowerCase().includes(lowerQuery))
-      .map((team) => team.name);
-    setTeamResults(matchedTeams);
-
-    // 스탯 용어 검색
-    const matchedStatTerms = StatTerms.filter(
-      (term) =>
-        term.term.toLowerCase().includes(lowerQuery) ||
-        term.meaning.toLowerCase().includes(lowerQuery)
-    );
-    setStatTermResults(matchedStatTerms);
-  }, [query, players]);
-
-  const handleSearchChange = (e) => {
-    setQuery(e.target.value);
+  const handleBackClick = () => {
+    setSelectedPlayer(null);
+    setSearchTerm("");
+    setFilteredPlayers([]);
   };
 
   return (
-    <div className="p-8 bg-neutral-100 min-h-screen">
-      <div className="mb-6 flex gap-2">
-        <input
-          type="text"
-          placeholder="팀, 선수, 스탯 검색"
-          value={query}
-          onChange={handleSearchChange}
-          className="border border-gray-400 px-3 py-2 rounded-md w-80"
-        />
+    <div className="min-h-screen bg-blue-50 flex items-center justify-center p-4">
+      <div className="bg-blue-900 p-6 rounded-lg shadow-lg w-full max-w-md">
+        {!selectedPlayer ? (
+          <>
+            <h1 className="text-3xl font-bold text-center text-blue-50 mb-6">
+              선수 검색
+            </h1>
+            <input
+              type="text"
+              placeholder="선수 이름, 팀, 포지션으로 검색..."
+              className="w-full p-3 border border-blue-600 bg-blue-50 text-blue-950 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={searchTerm}
+              onChange={handleSearch}
+            />
+            <div className="max-h-80 overflow-y-auto">
+              {filteredPlayers.map((player) => (
+                <div
+                  key={player.id}
+                  className="p-3 mb-2 bg-gray-700 hover:bg-gray-600 rounded-md cursor-pointer border border-gray-600"
+                  onClick={() => handlePlayerClick(player)}
+                >
+                  <p className="font-semibold text-gray-200">
+                    {player.name}{" "}
+                    <span className="text-gray-400">({player.team})</span>
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    포지션: {player.position || "정보 없음"}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div>
+            <button
+              onClick={handleBackClick}
+              className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            >
+              뒤로 가기
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-white">
+              {selectedPlayer.name} ({selectedPlayer.team})
+            </h2>
+            <div className="text-gray-300">
+              <div className="mb-2">
+                <span className="font-semibold">나이:</span>{" "}
+                {selectedPlayer.age}
+              </div>
+              {selectedPlayer.height_cm && (
+                <div className="mb-2">
+                  <span className="font-semibold">키:</span>{" "}
+                  {selectedPlayer.height_cm} cm
+                </div>
+              )}
+              {selectedPlayer.weight_kg && (
+                <div className="mb-2">
+                  <span className="font-semibold">몸무게:</span>{" "}
+                  {selectedPlayer.weight_kg} kg
+                </div>
+              )}
+              {selectedPlayer.position && (
+                <div className="mb-2">
+                  <span className="font-semibold">포지션:</span>{" "}
+                  {selectedPlayer.position}
+                </div>
+              )}
+              {(selectedPlayer.draft_year || selectedPlayer.draft_pick) && (
+                <div className="mb-2">
+                  <span className="font-semibold">드래프트:</span>
+                  {selectedPlayer.draft_year
+                    ? ` ${selectedPlayer.draft_year}년`
+                    : ""}
+                  {selectedPlayer.draft_pick
+                    ? ` ${selectedPlayer.draft_pick}순위`
+                    : ""}
+                  {selectedPlayer.draft_round
+                    ? ` (${selectedPlayer.draft_round}라운드)`
+                    : ""}
+                </div>
+              )}
+              {selectedPlayer.nationality && (
+                <div className="mb-2">
+                  <span className="font-semibold">국적:</span>{" "}
+                  {selectedPlayer.nationality}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
-
-      <h1 className="text-xl font-bold mb-4 text-blue-900">검색 결과</h1>
-
-      {loading ? (
-        <p className="text-gray-600">선수 목록 로딩 중...</p>
-      ) : (
-        <>
-          {/* 팀 검색 결과 */}
-          {teamResults.length > 0 && (
-            <div className="mb-4">
-              <h2 className="font-semibold text-black">🏀 팀</h2>
-              <ul className="list-disc pl-5">
-                {teamResults.map((team, idx) => (
-                  <li key={idx}>{team}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* 선수 검색 결과 */}
-          {filteredPlayers.length > 0 && (
-            <div className="mb-4">
-              <h2 className="font-semibold text-black">👤 선수</h2>
-              <ul className="list-disc pl-5">
-                {filteredPlayers.map((player) => (
-                  <li key={player.id}>
-                    {player.first_name} {player.last_name} (
-                    {player.team.full_name}, {player.position || "포지션 없음"})
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* 스탯 용어 검색 결과 */}
-          {statTermResults.length > 0 && (
-            <div className="mb-4">
-              <h2 className="font-semibold text-black">📖 스탯 용어</h2>
-              <ul className="list-disc pl-5">
-                {statTermResults.map((item) => (
-                  <li key={item.id}>
-                    <span className="font-bold">{item.term}</span>:{" "}
-                    {item.meaning}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* 아무 결과도 없을 경우 */}
-          {filteredPlayers.length === 0 &&
-            teamResults.length === 0 &&
-            statTermResults.length === 0 &&
-            query && <p className="text-gray-600">검색 결과가 없습니다.</p>}
-        </>
-      )}
     </div>
   );
-};
+}
 
 export default Search;
