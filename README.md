@@ -91,6 +91,7 @@ npm start
 
 프로젝트의 전반적인 구조는 다음과 같습니다.
 
+```
 Starting_5/
 ├── public/ # 공용 정적 자산
 ├── src/
@@ -111,3 +112,4 @@ Starting_5/
 ├── package.json # 프로젝트 의존성 및 스크립트
 ├── README.md # 현재 파일
 └── ...
+```
