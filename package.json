@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@balldontlie/sdk": "^1.2.2",
     "@tailwindcss/vite": "^4.1.7",
     "axios": "^1.9.0",
     "cors": "^2.8.5",
