@@ -35,7 +35,6 @@ const SignUp = () => {
       alert("회원가입이 완료되었습니다!");
       navigate("/Login");
     } catch (err) {
-      // Firebase 에러 코드에 따라 사용자에게 메시지 제공 가능
       setError("회원가입 중 오류가 발생했습니다.");
     }
   };

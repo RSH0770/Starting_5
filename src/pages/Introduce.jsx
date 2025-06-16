@@ -9,15 +9,11 @@ const Introduce = () => {
     <div className="h-auto min-h-screen p-10 mx-auto bg-blue-50">
       <div className="bg-blue-900 p-8 rounded-2xl shadow-xl">
         <h1 className="text-4xl font-bold mb-8 text-center text-orange-400">
-          {" "}
-          {/* 타이틀 색상 및 중앙 정렬 */}
           What is Baseketball?
         </h1>
 
         <section className="mb-10">
           <ul className="text-lg leading-relaxed list-disc list-inside space-y-2 text-gray-100">
-            {" "}
-            {/* 텍스트 색상 조정 */}
             <li>
               농구는 5명이 손을 사용해 공을 링(림)에 던져 넣어 득점하는
               스포츠입니다.
@@ -28,18 +24,12 @@ const Introduce = () => {
             </li>
           </ul>
         </section>
-
-        {/* 세부 정보 섹션들 (경기 규칙, 매력 등): 어두운 내부 카드 (bg-gray-700) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-blue-50 shadow-md rounded-2xl p-6">
             <h2 className="text-2xl font-semibold text-blue-500 mb-3">
-              {" "}
-              {/* 헤더 색상 조정 */}
               🤝 경기 규칙
             </h2>
             <ul className="list-disc list-inside space-y-2 text-gray-700">
-              {" "}
-              {/* 텍스트 색상 조정 */}
               <li>경기 시간은 4쿼터, 각 10~12분입니다.</li>
               <li>공격은 24초 안에 시도되어야 합니다.</li>
               <li>슛이 성공하면 2점 또는 3점을 득점합니다.</li>
@@ -49,13 +39,9 @@ const Introduce = () => {
 
           <div className="bg-blue-50 text-gray-200 shadow-md rounded-2xl p-6">
             <h2 className="text-2xl font-semibold text-red-500 mb-3">
-              {" "}
-              {/* 헤더 색상 조정 */}
               ⛹️‍♂️ 농구의 매력
             </h2>
             <ul className="list-disc list-inside space-y-2 text-gray-700">
-              {" "}
-              {/* 텍스트 색상 조정 */}
               <li>빠른 전환과 전략적인 전개</li>
               <li>한순간에 바뀌는 승부의 묘미</li>
               <li>팀워크와 개인기, 그 완벽한 조화</li>
@@ -65,13 +51,9 @@ const Introduce = () => {
 
           <div className="bg-blue-50 text-gray-200 shadow-md rounded-2xl p-6 mt-6">
             <h2 className="text-2xl font-bold text-blue-500 mb-4">
-              {" "}
-              {/* 헤더 색상 조정 */}
               📚 농구의 역사
             </h2>
             <ul className="list-disc list-inside space-y-2 text-gray-700">
-              {" "}
-              {/* 텍스트 색상 조정 */}
               <li>
                 농구는 캐나다계 미국인 <strong>제임스 네이스미스</strong>가
                 고안했습니다.
@@ -85,13 +67,9 @@ const Introduce = () => {
 
           <div className="bg-blue-50 text-gray-200 shadow-md rounded-2xl p-6 mt-6">
             <h2 className="text-2xl font-bold text-red-500 mb-4">
-              {" "}
-              {/* 헤더 색상 조정 */}
               🏀 농구의 세 가지 핵심 기본기
             </h2>
             <ul className="list-disc list-inside space-y-2 text-gray-700">
-              {" "}
-              {/* 텍스트 색상 조정 */}
               <li>
                 <strong>패스(Pass):</strong> 팀 간의 유기적인 연결
               </li>
@@ -106,21 +84,17 @@ const Introduce = () => {
           </div>
         </div>
 
-        {/* NBA 리그 소개 섹션: 어두운 내부 카드 (bg-gray-700) */}
         <section className="mt-12 bg-blue-50 p-6 rounded-xl text-gray-200 shadow-md">
           <h2 className="text-2xl font-semibold text-center text-red-500 mb-4">
             🌎 NBA 리그 소개
           </h2>
           <ul className="list-disc list-inside text-gray-700 space-y-2 mb-6">
-            {" "}
-            {/* 텍스트 색상 조정 */}
             <li>
               NBA는 세계 최고의 프로 농구 리그로, 미국과 캐나다의 30개 팀이
               참가합니다.
             </li>
             <li>
               팀들은 <strong className="text-blue-400">동부 컨퍼런스</strong>와{" "}
-              {/* 강조 텍스트 색상 조정 */}
               <strong className="text-red-400">서부 컨퍼런스</strong>로 나뉘고,
               6개의 디비전으로 구성되어 있습니다.
             </li>
@@ -131,15 +105,12 @@ const Introduce = () => {
             </li>
           </ul>
 
-          {/* 컨퍼런스 팀 목록 컨테이너 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="rounded-2xl bg-blue-700 p-4 mt-2 shadow">
               <h1 className="flex justify-center text-3xl font-bold text-white pb-2">
                 Eastern Conference
               </h1>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                {" "}
-                {/* <<<<< 이 부분 변경: lg:grid-cols-3 추가 */}
                 {eastTeams.map((team) => (
                   <div
                     key={team.id}

@@ -1,17 +1,8 @@
 import React, { useState } from "react";
-import Login from "../pages/Login";
-import Stats from "../pages/Stats";
-import Search from "../pages/Search";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../auth/firebase";
 import useAuth from "../auth/useAuth";
 import { signOut } from "firebase/auth";
-
-const searchIconOut =
-  "https://img.icons8.com/?size=100&id=132&format=png&color=000000";
-
-const searchIconIn =
-  "https://img.icons8.com/?size=100&id=7695&format=png&color=000000";
 
 const btnStyle =
   "p-2 font-bold text-blue-950 border-blue-50 rounded-2xl hover:text-blue-800";
@@ -47,16 +38,16 @@ const NavBar = () => {
           ></img>
         </div>
 
-        <div onClick={introduce} className="p-2 font-bold">
+        <div onClick={introduce} className={btnStyle}>
           Introduce
         </div>
-        <div onClick={community} className="p-2 font-bold">
+        <div onClick={community} className={btnStyle}>
           Community
         </div>
-        <div onClick={stats} className="p-2 font-bold">
+        <div onClick={stats} className={btnStyle}>
           Stats
         </div>
-        <div onClick={search} className="p-2 font-bold">
+        <div onClick={search} className={btnStyle}>
           Search
         </div>
 

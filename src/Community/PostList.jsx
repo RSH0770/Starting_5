@@ -8,7 +8,6 @@ import {
   doc,
   getDoc,
 } from "firebase/firestore";
-import UserManagement from "../admin/UserManagement";
 
 const PostList = () => {
   const user = auth.currentUser;
